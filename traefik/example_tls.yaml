@@ -1,0 +1,50 @@
+# Example config with SSL/TLS and LetsEncrypt enabled.
+
+entryPoints:
+  web:
+    address: ':80'
+    http:
+      redirections: # This sets up a redirect so that anyone connecting insecurely is redirected to the secure port.
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure: # This is the secure entrypoint - the cert resolver specifies that Let's Encrypt should be used to determine the correct SSL certificate.
+    address: ':443'
+    http:
+      tls:
+        certResolver: letsencrypt
+
+serversTransport:
+  insecureSkipVerify: true
+
+log:
+  filePath: "/logs/traefik.log"
+accessLog:
+  filePath: "/logs/access.log"
+
+providers:
+  docker:
+    watch: true
+    network: traefik
+    exposedByDefault: false
+    defaultRule: "Host(`{{ or (index .Labels \"host\") .Name }}.yourdomain.com`)"
+  file:
+    watch: true
+    directory: /data/conf.d/ # Mount a directory containing .yaml files to this path.
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: your-email@gmail.com
+      # uncomment this to use the staging server during testing
+      #caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      storage: /data/acme.json # This file needs to be persisted.
+      # Use the classic HTTP-based challenge - works for most public servers
+      httpChallenge:
+        entryPoint: web
+      # ... or use a DNS based challenge, which works for things like private Intranet sites or non-Web-based applications.
+      #dnsChallenge:
+        #provider: digitalocean # or whichever provider you use - see Traefik docs for what environment variables you need to est to provide your API key.
+
+api:
+  dashboard: true

@@ -4,7 +4,7 @@ This is a full stack example of a Web application along with all of the necessar
 
 ## To run the demo
 
-The built in config uses `localtest.me` without SSL. If you want SSL, you can look at some of the other example configuration files in the `docker` directory.
+The built in config uses `localtest.me` without SSL. If you want SSL, you can look at the example configuration in the `traefik` directory.
 
 To run the demo, first build the containers:
 
