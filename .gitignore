@@ -1,0 +1,13 @@
+# Python excludes
+venv/
+__pycache__/
+flask.log
+*.egg-info
+
+# Include only the collections folder under thunder-client.
+# *mumble mumble storing the collections in the repo is a paid subscription feature yeah whatever mumble mumble*
+/thunder-client/*
+!/thunder-client/collections/
+
+# Data for the backend
+live/

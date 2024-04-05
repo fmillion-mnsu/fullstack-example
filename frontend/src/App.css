@@ -1,0 +1,35 @@
+.App {
+  text-align: center;
+}
+
+html {
+  background: #222;
+}
+body {
+  padding-top: 70px;
+  padding-bottom: 70px;
+  background: #222 !important;
+  color: #fff;
+}
+.bigger-icon i {
+  font-size: 2em;
+}
+
+.form-control {
+  background: #222;
+  color: #fff;
+}
+
+/* Bootstrap overrides */
+.form-control:focus {
+  background: #222;
+  color: #fff;
+}
+.form-control::placeholder {
+  color: #888;
+  opacity: 1; /* Firefox */
+}
+.modal-content {
+  background: #222;
+  color: #fff;
+}

@@ -1,0 +1,60 @@
+
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
+{
+
+    "name": "Development Environment",
+    "image": "mcr.microsoft.com/devcontainers/base:debian",
+    
+    "features": {
+        // NodeJS
+		"ghcr.io/devcontainers/features/node:1": {
+			"nodeGypDependencies": true,
+			"version": "lts",
+			"nvmVersion": "latest"
+		},
+        // TypeScript
+		"ghcr.io/devcontainers-community/npm-features/typescript:1": {
+			"version": "latest"
+		},
+        // Python
+        "ghcr.io/devcontainers/features/python:1": { },
+        // SQLite database support
+        "ghcr.io/swift-server-community/swift-devcontainer-features/sqlite:1": { }
+	},
+    
+    // Forward ports from the container to the host automatically during development
+    "forwardPorts": [ 3000, 5000 ],
+    "portsAttributes": { 
+        "3000": { "label": "Web Frontend" },
+        "5000": { "label": "Python Backend" }
+    },
+    "otherPortsAttributes": { "onAutoForward": "ignore" }, // don't auto-forward other ports, like the VS Code interface ports
+
+    // Run the postcreate script after building the container
+    "postCreateCommand": "./.devcontainer/postcreate.sh",
+
+    // Configure tool-specific properties.
+    "customizations": {
+        "vscode": {
+            "extensions": [         // install these extensions into the container
+                "GitHub.copilot",                       // This one is obviously the most important.  
+                "ms-python.python",                     // Python linting and language support
+                "ms-azuretools.vscode-docker",          // Docker and Compose file syntax highlighting
+                "rangav.vscode-thunder-client"          // Postman-line API test client in VS Code
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/opt/venv/bin/python3",
+                "python.pythonPath": "/opt/venv/bin/python3"
+            }
+        }
+    },
+
+    // Provide access to the workspace directory path inside the container as an environment variable
+    "remoteEnv": {
+        "WORKSPACE_PATH": "${containerWorkspaceFolder}",
+        // Sets the default backend url during development
+        "REACT_APP_API_URL": "http://localhost:5000/api/v1/"
+    }
+
+}

@@ -1,0 +1,41 @@
+# This is a basic configuration file for Traefik.
+
+# Defines an entrypoint that will listen on port 80 with no SSL/TLS.
+entryPoints:
+  web:
+    address: ':80'
+# If you wanted SSL, you'd need to include another entrypoint here that listens on port 443 and enables TLS.
+# You can then do several things, such as auto-direct insecure connections to secure ones and auto-manage Let's Encrypt certificates.
+
+# Instructs Traefik to ignore any SSL errors that might occur on downstream servers.
+# This is useful for applications that insist on using SSL but have self-signed certificates.
+serversTransport:
+  insecureSkipVerify: true
+
+# Log all requests and Traefik messages to files in the /data directory.
+log:
+  filePath: "/logs/traefik.log"
+  level: DEBUG
+accessLog:
+  filePath: "/logs/access.log"
+
+# Specify the configuration providers - where Traefik will get info for web services from.
+providers:
+  # Configure Traefik to listen to Docker and automatically map services.
+  # Note that you must map /var/lib/docker.sock into the Traefik container for this to work.
+  # You must also include at minimum the `traefik.enable=true` label on each service you want Traefik to use.
+  docker:
+    watch: true
+    exposedByDefault: false
+    defaultRule: "Host(`{{ or (index .Labels \"host\") .Name }}.localtest.me`)"
+  # Also look for config in the file api.yaml. 
+  # You have to configure static services in a separate file, you can't just include it in hte root config file.
+  file:
+    watch: true
+    filename: /data/api.yaml
+# Traefik supports many other config sources such as Kubernetes and many others.
+
+# Allow access to the Traefik API.
+api:
+  dashboard: true
+# You still need to define a router to the API - that's done in api.yaml.

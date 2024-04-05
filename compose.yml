@@ -1,0 +1,37 @@
+services:
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    environment:
+      - REACT_APP_API_URL=/api/v1/
+    labels:
+      - "traefik.enable=true"
+      - "host=shopping"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    volumes:
+      - "./live:/data/" # The database file will be stored in /data.
+    labels:
+      - "traefik.enable=true"
+      # This somewhat complex looking rule indicates to map *only* requests for paths under /api/v1 and pointing at shop.localtest.me
+      # It also overrides the usual "host" rule, so you have to specify the entire hostname including the suffix.
+      - "traefik.http.routers.backend.rule=Host(`shopping.localtest.me`) && PathPrefix(`/api/v1`)"
+  
+  traefik:
+    image: traefik:2.10
+    command:
+      - "--configFile=/data/traefik.yaml"
+    volumes:
+      - "./traefik/traefik.yaml:/data/traefik.yaml:ro"
+      - "./traefik/api.yaml:/data/api.yaml:ro" # Configuration for actual services must be in a separate file.
+      - "./live/logs:/logs" # Logs will be stored in ./live/logs, which is in .gitignore. 
+      - "/var/run/docker.sock:/var/run/docker.sock" # You need this so Traefik can access Docker and enumerate containers.
+    ports:
+      - 80:80
