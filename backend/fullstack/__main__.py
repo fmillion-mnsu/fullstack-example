@@ -1,6 +1,9 @@
 # This is a minimal Flask application that implements a simple shopping/todo/checkoff list.
 # It uses a SQLite database to store the items and their checked status.
 
+import datetime
+from typing import List
+
 from flask import Flask, request
 from ._version import VERSION
 from .database import Context, ShopItem
@@ -11,17 +14,18 @@ app = Flask(__name__)
 def get_all_shoplist_items():
     """Return a list of all entries in the list."""
     with Context():
-        items = ShopItem.select()
+        items = ShopItem.select().where(not ShopItem.deleted)
         return [{"id": item.id, "item": item.item, "checked": item.checked} for item in items]
 
 @app.route('/api/v1/items', methods=["DELETE"])
 def delete_all_checked_items():
     """Delete items from the list that are checked."""
     with Context() as ctx:
-        items = ShopItem.select().where(ShopItem.checked == True)
+        items: List[ShopItem] = ShopItem.select().where(ShopItem.checked == True)
         item_count = len(items)
-        qry = ShopItem.delete().where(ShopItem.checked)
-        qry.execute()
+        for item in items:
+            item.deleted = True
+            ShopItem.save(item)
         ctx.db.commit()
         return str(item_count), 200
 
@@ -32,7 +36,7 @@ def add_new_item():
     if "item" not in data:
         return "", 400 # invalid json
     with Context():
-        item = ShopItem.create(item=str(data['item']), checked=False)
+        item = ShopItem.create(item=str(data['item']), add_date=datetime.datetime.now(datetime.UTC), checked=False)
         ShopItem.save(item)
         return "", 201
 
@@ -42,6 +46,11 @@ def toggle_item(item_id: int):
     with Context():
         item = ShopItem.get_by_id(item_id)
         item.checked = not item.checked
+        if item.checked:
+            # set date
+            item.checked_date = datetime.datetime.now(datetime.UTC)
+        else:
+            item.checked_date = None
         ShopItem.save(item)
         return "", 200
         

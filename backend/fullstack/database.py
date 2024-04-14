@@ -5,6 +5,8 @@
 # The visible API will consist only of Context, the initialize method, and the table classes.
 __all__ = ['Context', 'initialize']
 
+import datetime
+
 from peewee import *
 from threading import Lock
 
@@ -66,7 +68,10 @@ class ShopItem(BaseModel):
     """Represents an item in the shopping list."""    
     id = AutoField(primary_key=True)                        # automatic primary key  
     item = CharField()                                      # the item
+    add_date = DateTimeField()                              # date item was added
     checked = BooleanField()                                # has item been checked off?
+    checked_date = DateTimeField(null=True)                 # date item was checked off
+    deleted = BooleanField(default=False)                   # has item been deleted?
 
 # This code initializes the database with a handful of entries if none exist.
 # It will run anytime database is imported.
@@ -77,5 +82,5 @@ with Context() as ctx:
         new_items = ["Apples", "Bananas", "Oranges", "Milk", "Bread", "Cheese", "Eggs"]
         # Add each item as a row
         for item in new_items:
-            ShopItem.create(item=item, checked=False)
+            ShopItem.create(item=item, add_date=datetime.datetime.now(datetime.UTC), checked=False)
         ctx.db.commit()
