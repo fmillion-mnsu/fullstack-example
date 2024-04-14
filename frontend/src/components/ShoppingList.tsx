@@ -153,7 +153,7 @@ function ShoppingList() {
                         {shopList.map((item, index) => (
                             <tr key={item.id}>
                                 <td>{item.item}</td>
-                                <td onClick={() => toggleItem(item.id)} className="bigger-icon">{item.checked ? <i className="fa-regular fa-square-check" /> : <i className="fa-regular fa-square" />}</td>
+                                <td onClick={() => toggleItem(item.id)} className="bigger-icon">{item.checked ? <><span className="sr-only">{item.item} not checked</span><i className="fa-regular fa-square-check" /></> : <><span className="sr-only">{item.item} checked</span><i className="fa-regular fa-square" /></>}</td>
                             </tr>
                         ))}
                         {showNewItemLine && (
