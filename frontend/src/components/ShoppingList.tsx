@@ -139,8 +139,8 @@ function ShoppingList() {
             <Container>
                 <div style={{textAlign: "right", paddingBottom: "1em"}}>
                     {apiInFlight && <><span>Waiting for API...</span> <span><i className="fa-solid fa-hourglass" /></span><span style={{display: "inline-block", width: "3em"}}></span></>}&nbsp;
-                    <Button disabled={apiInFlight} variant="danger" onClick={() => setShowConfirmModal(true)}><i className="fa-solid fa-trash" /> Clear Purchased Items</Button>&nbsp;
-                    <Button disabled={showNewItemLine || apiInFlight} variant="success" onClick={() => setShowNewItemLine(true)}><i className="fa-regular fa-plus" /> Add New Item</Button>
+                    <Button disabled={apiInFlight} variant="danger" onClick={() => setShowConfirmModal(true)}><i aria-hidden="true" className="fa-solid fa-trash" /> Clear Purchased Items</Button>&nbsp;
+                    <Button disabled={showNewItemLine || apiInFlight} variant="success" onClick={() => setShowNewItemLine(true)}><i aria-hidden="true" className="fa-regular fa-plus" /> Add New Item</Button>
                 </div>
                 <Table variant="dark" striped>
                     <thead>
