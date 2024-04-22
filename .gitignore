@@ -11,3 +11,6 @@ flask.log
 
 # Data for the backend
 live/
+
+# Don't update for local compose.yml modifications
+/compose.yml
