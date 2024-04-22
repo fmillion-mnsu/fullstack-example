@@ -14,7 +14,9 @@ app = Flask(__name__)
 def get_all_shoplist_items():
     """Return a list of all entries in the list."""
     with Context():
-        items = ShopItem.select().where(not ShopItem.deleted)
+        
+        items = ShopItem.select().where(ShopItem.deleted == False)
+        print(items)
         return [{"id": item.id, "item": item.item, "checked": item.checked} for item in items]
 
 @app.route('/api/v1/items', methods=["DELETE"])
