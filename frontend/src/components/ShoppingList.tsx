@@ -115,6 +115,16 @@ function ShoppingList() {
         }
     }
 
+    // This will force the input focus to the new item box whenever the new item line is shown.
+    useEffect(() => {
+        if (showNewItemLine) {
+            const newItemInput = document.getElementById("newItem");
+            if (newItemInput) {
+                newItemInput.focus();
+            }
+        }
+    }, [showNewItemLine]); // This effect runs whenever `showNewItemLine` changes
+
     // Gets the list from the API on page load.
     useEffect(() => {
         updateList();
