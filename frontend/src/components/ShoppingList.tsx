@@ -161,8 +161,8 @@ function ShoppingList() {
                                 <td>
                                     <Form.Control id="newItem" disabled={apiInFlight} type="text" placeholder="Enter Item Name. Press Esc to cancel." onKeyDown={handleKeyPress} />
                                 </td>
-                                <td className="bigger-icon">
-                                    <i className="fa-regular fa-square" />
+                                <td>
+                                <Button variant="danger" onClick={() => setShowNewItemLine(false)}>Cancel</Button>
                                 </td>
                             </tr>
                         )}
